@@ -1,0 +1,83 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2836";
+	// fragment@0 {
+	// 	// target-path = "/";
+	// 	// __overlay__ {
+	// 	// 	gpiotest {
+	// 	// 		compatible = "hxdrone,gpiotest";
+	// 	// 		status = "okay";
+    //     //         my_label = "hello_dts";
+	// 	// 		yellow-led-gpios = <&gpio 17 0>; 
+	// 	// 		button-gpios = <&gpio 27 0>; 
+	// 	// 	};
+	// 	// };
+	// };
+
+	fragment@1 {
+        target = <&spidev0>;
+        __overlay__ {
+			status = "disabled";
+		};
+    };
+
+	fragment@2 {
+        target = <&spidev1>;
+        __overlay__ {
+			status = "disabled";
+		};
+    };
+
+	fragment@3 {
+        target = <&spi0>;
+        __overlay__ {
+			status = "okay";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			// myspi_mxhat: myspi_mxhat@0{
+			// 	compatible = "hxdrone,myspi_mxhat";
+			// 	reg = <0>;	/* CE0 */
+			// 	#address-cells = <1>;
+			// 	#size-cells = <0>;
+			// 	spi-max-frequency = <2000000>;
+			// };
+
+			bmp280@0 {
+				compatible = "bosch,bmp280";
+				reg = <0>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <2000000>;
+			};
+
+			mpu9250@1 {
+				compatible = "invensense,mpu6500";
+				reg = <1>;
+				interrupt-parent = <&gpio>;
+				interrupts = <17 1>;
+				spi-max-frequency = <1000000>;
+			};
+
+		
+		};
+    };
+
+	fragment@4 {
+		target = <&i2c_arm>;
+		__overlay__ {
+			status = "okay";
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			lsm6dsv16x@6a {
+				compatible = "st,lsm6dsv16x";
+				reg = <0x6a>;
+				interrupt-parent = <&gpio>;
+				interrupts = <27 1>;
+				st,drdy-int-pin = <1>;
+			};
+		};
+	};
+};
