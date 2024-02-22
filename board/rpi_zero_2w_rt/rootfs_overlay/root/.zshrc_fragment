@@ -6,3 +6,6 @@ alias c="clear"
 function mkc() {
 	mkdir && cd 
 }
+
+path+=("/root/.local/bin")
+export PATH
